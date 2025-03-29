@@ -17,3 +17,6 @@ func get_class_document(name: String) -> XMLDocument:
 	)
 	
 	return _get_class_document_by_idx(idx)
+
+func set_class_document(document: XMLDocument) -> void:
+	db.append(document)

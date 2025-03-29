@@ -12,6 +12,8 @@ func construct(db: ClassDocDB) -> Error:
 		
 		_doc_name = class_node.attributes.get("name", "")
 		
+		db.current_class = _doc_name
+		
 		error = super.construct(db)
 		
 		if error != OK:

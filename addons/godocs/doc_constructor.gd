@@ -18,7 +18,7 @@ func _init(
 	self.build_format = build_format
 
 func construct(db: ClassDocDB) -> Error:
-	var output: String = DocBuilder.build(db, _builders)
+	var output: String = DocBuilder.build_all(_builders, db)
 	
 	return write_to_file(build_path.path_join(_doc_name), output)
 

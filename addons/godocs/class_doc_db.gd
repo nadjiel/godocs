@@ -2,21 +2,24 @@
 class_name ClassDocDB
 extends RefCounted
 
-var db: Array[XMLDocument] = []
+var data: Array[XMLDocument] = []
 
-func _get_class_document_by_idx(idx: int) -> XMLDocument:
-	if idx >= 0 and idx < db.size():
-		return db[idx]
+func get_class_document_by_idx(idx: int) -> XMLDocument:
+	if idx >= 0 and idx < data.size():
+		return data[idx]
 	
 	return null
 
 func get_class_document(name: String) -> XMLDocument:
-	var idx: int = db.find_custom(
+	var idx: int = data.find_custom(
 		func(document: XMLDocument) -> bool:
 			return document.root.attributes.get("name", "") == name
 	)
 	
-	return _get_class_document_by_idx(idx)
+	return get_class_document_by_idx(idx)
 
 func set_class_document(document: XMLDocument) -> void:
-	db.append(document)
+	data.append(document)
+
+func get_class_document_list() -> Array[XMLDocument]:
+	return data

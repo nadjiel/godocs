@@ -6,7 +6,7 @@ var src_path: String
 
 var recursive: bool
 
-var _db: ClassDocDB = ClassDocDB.new()
+var db: ClassDocDB = ClassDocDB.new()
 
 func _init(
 	src_path: String,
@@ -34,7 +34,7 @@ func read_file(path: String) -> Error:
 	
 	var document: XMLDocument = XML.parse_file(path)
 	
-	_db.set_class_document(document)
+	db.set_class_document(document)
 	
 	return OK
 

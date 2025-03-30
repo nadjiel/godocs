@@ -7,6 +7,15 @@ const COMMENT_PREFIX: String = ".. "
 static func parse_class_name(name: String) -> String:
 	return name.replace(".", "_")
 
+static func make_class_label_target(name: String) -> String:
+	return "class_" + parse_class_name(name)
+
+static func make_class_property_label_target(
+	name: String,
+	property_name: String
+) -> String:
+	return make_class_label_target(name) + "_property_" + property_name
+
 static func make_table_row_separator(
 	col_widths: Array[int],
 	h_sep: String = "-",
@@ -73,6 +82,18 @@ static func make_table_content(
 
 static func make_bold(content: String) -> String:
 	var result: String = "**%s**" % content
+	
+	return result
+
+static func make_code_block(content: String, language: String = "") -> String:
+	var content_output: String = content
+	
+	if content.contains("\n"):
+		content_output = make_directive("code-block", [ language ], {}, content)
+	else:
+		content_output = "``%s``" % content
+	
+	var result: String = content_output
 	
 	return result
 

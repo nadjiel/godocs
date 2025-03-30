@@ -1,5 +1,5 @@
 
-class_name RSTClassNameBuilder
+class_name RSTClassHeadingBuilder
 extends RSTDocBuilder
 
 func make_inheritage_output(db: ClassDocDB) -> String:
@@ -21,14 +21,19 @@ func make_inheritage_output(db: ClassDocDB) -> String:
 func _build(db: ClassDocDB) -> String:
 	var document: XMLDocument = db.get_current_class_document()
 	var class_node: XMLNode = document.root
+	var brief_description_node := class_node.get_child_by_name(
+		"brief_description"
+	) as XMLNode
 	
 	var name := class_node.attributes.get("name", "") as String
 	var name_size: int = name.length()
+	var brief_description: String = brief_description_node.content
 	
 	var label_output: String = make_label("class_%s" % parse_class_name(name))
 	var title_output: String = name
 	var underline_output: String = "=".repeat(name_size)
 	var inheritage_output: String = make_inheritage_output(db)
+	var brief_description_output: String = brief_description
 	
 	var result: String = "\n%s\n\n%s\n%s\n\n%s\n" % [
 		label_output,
@@ -36,5 +41,8 @@ func _build(db: ClassDocDB) -> String:
 		underline_output,
 		inheritage_output
 	]
+	
+	if brief_description_output != "":
+		result += "\n%s\n" % brief_description_output
 	
 	return result

@@ -7,6 +7,70 @@ const COMMENT_PREFIX: String = ".. "
 static func parse_class_name(name: String) -> String:
 	return name.replace(".", "_")
 
+static func make_table_row_separator(
+	col_widths: Array[int],
+	h_sep: String = "-",
+	joint: String = "+"
+) -> String:
+	var result := joint
+	
+	for width: int in col_widths:
+		result += "-".repeat(width) + "+"
+	
+	return result
+
+static func make_table_row(
+	row: Array[String],
+	col_widths: Array[int],
+	v_sep: String = "|"
+) -> String:
+	var num_cols: int = col_widths.size()
+	
+	var result := v_sep
+	
+	for col_i: int in num_cols:
+		var cel: String = row[col_i]
+		var col_width: int = col_widths[col_i]
+		var padding := " ".repeat(col_width - 2 - cel.length())
+		
+		result += " " + cel + padding + " " + v_sep
+	
+	return result
+
+static func make_table_content(
+	matrix: Array[Array],
+	h_sep: String = "-",
+	v_sep: String = "|",
+	joint: String = "+"
+) -> String:
+	if matrix.is_empty():
+		return ""
+	
+	var col_widths: Array[int] = []
+	var num_cols: int = matrix[0].size()
+	
+	# Determine the maximum width for each column
+	for col_i: int in num_cols:
+		var max_width := 0
+		
+		for row: Array[String] in matrix:
+			var cel: String = row[col_i]
+			
+			max_width = max(max_width, cel.length() + 2)
+		
+		col_widths.append(max_width)
+	
+	var result: String = make_table_row_separator(col_widths, h_sep, joint) + "\n"
+	
+	for row_i: int in matrix.size():
+		var row: Array[String] = []
+		row.assign(matrix[row_i])
+		
+		result += make_table_row(row, col_widths, v_sep) + "\n"
+		result += make_table_row_separator(col_widths, h_sep, joint) + "\n"
+	
+	return result
+
 static func make_bold(content: String) -> String:
 	var result: String = "**%s**" % content
 	
@@ -74,6 +138,17 @@ static func make_directive(
 		result += "\n%s" % options_output
 	if content_output != "":
 		result += "\n\n%s" % content_output
+	
+	return result
+
+static func make_table(
+	content_matrix: Array[Array],
+	arguments: Array[String] = [],
+	options: Dictionary[String, String] = {}
+) -> String:
+	var content_output: String = make_table_content(content_matrix)
+	
+	var result: String = make_directive("table", arguments, options, content_output)
 	
 	return result
 

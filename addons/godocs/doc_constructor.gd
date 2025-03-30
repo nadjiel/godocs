@@ -23,9 +23,6 @@ func construct(db: ClassDocDB) -> Error:
 	return write_to_file(build_path.path_join(_doc_name), output)
 
 func write_to_file(path: String, content: String) -> Error:
-	if not DirAccess.dir_exists_absolute(path):
-		return ERR_FILE_NOT_FOUND
-	
 	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 	
 	if file == null:

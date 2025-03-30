@@ -12,7 +12,7 @@ var _doc_name: String = ""
 
 func _init(
 	build_path: String,
-	build_format: String = ".txt"
+	build_format: String = "txt"
 ) -> void:
 	self.build_path = build_path
 	self.build_format = build_format
@@ -20,7 +20,7 @@ func _init(
 func construct(db: ClassDocDB) -> Error:
 	var output: String = DocBuilder.build_all(_builders, db)
 	
-	return write_to_file(build_path.path_join(_doc_name), output)
+	return write_to_file(_get_doc_path(), output)
 
 func write_to_file(path: String, content: String) -> Error:
 	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
@@ -33,3 +33,9 @@ func write_to_file(path: String, content: String) -> Error:
 	file.close()
 	
 	return OK
+
+func _get_doc_path() -> String:
+	return "%s.%s" % [
+		build_path.path_join(_doc_name),
+		build_format
+	]

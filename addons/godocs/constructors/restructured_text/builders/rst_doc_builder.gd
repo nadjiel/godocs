@@ -252,4 +252,57 @@ static func make_type_ref(type: String) -> String:
 	
 	return result
 
+static func make_property_signature(
+	name: String,
+	type: String = "",
+	default_value: String = ""
+) -> String:
+	var result: String = ""
+	
+	if type != "":
+		result += make_type_ref(type) + " "
+	
+	result += name
+	
+	if default_value != "":
+		if default_value == "<unknown>":
+			default_value = "unknown"
+		
+		result += " = " + make_code_block(default_value)
+	
+	return result
+
+static func make_method_signature(
+	name: String,
+	return_type: String = "",
+	params: Array[Dictionary] = []
+) -> String:
+	var result: String = ""
+	
+	if return_type != "":
+		result += make_type_ref(return_type) + " "
+	
+	result += name
+	
+	var params_output: String = "("
+	
+	for i: int in params.size():
+		var param: Dictionary[String, String] = {}
+		param.assign(params[i])
+		
+		params_output += make_property_signature(
+			param.get("name", ""),
+			param.get("type", ""),
+			param.get("default", "")
+		)
+		
+		if i < params.size() - 1:
+			params_output += ", "
+	
+	params_output += ")"
+	
+	result += params_output
+	
+	return result
+
 #endregion

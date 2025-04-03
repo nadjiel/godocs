@@ -207,29 +207,38 @@ static func parse_type(type: String) -> String:
 	
 	return result
 
-static func make_class_label(name: String) -> String:
+static func make_class_label_target(name: String) -> String:
 	return "class_" + parse_class_name(name)
 
-static func make_class_property_label(
+static func make_class_property_label_target(
 	name: String,
 	property_name: String
 ) -> String:
-	return make_class_label(name) + "_property_" + property_name
+	return make_class_label_target(name) + "_property_" + property_name
 
-static func make_class_method_label(
+static func make_class_method_label_target(
 	name: String,
 	method_name: String
 ) -> String:
-	return make_class_label(name) + "_method_" + method_name
+	return make_class_label_target(name) + "_method_" + method_name
+
+static func make_class_label(name: String):
+	return make_label(make_class_label_target(name))
+
+static func make_class_property_label(name: String, property: String):
+	return make_label(make_class_property_label_target(name, property))
+
+static func make_class_method_label(name: String, method: String):
+	return make_label(make_class_method_label_target(name, method))
 
 static func make_class_ref(name: String):
-	return make_ref(name, make_class_label(name))
+	return make_ref(name, make_class_label_target(name))
 
 static func make_class_property_ref(name: String, property: String):
-	return make_ref(name, make_class_property_label(name, property))
+	return make_ref(name, make_class_property_label_target(name, property))
 
 static func make_class_method_ref(name: String, method: String):
-	return make_ref(name, make_class_method_label(name, method))
+	return make_ref(name, make_class_method_label_target(name, method))
 
 static func make_type_ref(type: String) -> String:
 	var result: String = parse_type(type)

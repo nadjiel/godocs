@@ -2,19 +2,9 @@
 class_name RSTDocBuilder
 extends DocBuilder
 
+#region General RST
+
 const COMMENT_PREFIX: String = ".. "
-
-static func parse_class_name(name: String) -> String:
-	return name.replace(".", "_")
-
-static func make_class_label_target(name: String) -> String:
-	return "class_" + parse_class_name(name)
-
-static func make_class_property_label_target(
-	name: String,
-	property_name: String
-) -> String:
-	return make_class_label_target(name) + "_property_" + property_name
 
 static func make_table_row_separator(
 	col_widths: Array[int],
@@ -197,3 +187,60 @@ static func make_role(
 
 static func make_ref(content: String, target: String) -> String:
 	return make_role("ref", content, target)
+
+#endregion
+
+#region Formatting
+
+static func parse_class_name(name: String) -> String:
+	return name.replace(".", "_")
+
+static func parse_type(type: String) -> String:
+	var result: String = type
+	
+	# Substitute Array notation from "type[]" to "Array[type]"
+	result = (
+		RegEx.create_from_string(r"(\S+)\[\]").sub(result, "Array[$1]")
+	)
+	# Substitue Inner class notation from Class.InnerClass to Class_InnerClass
+	result = parse_class_name(result)
+	
+	return result
+
+static func make_class_label(name: String) -> String:
+	return "class_" + parse_class_name(name)
+
+static func make_class_property_label(
+	name: String,
+	property_name: String
+) -> String:
+	return make_class_label(name) + "_property_" + property_name
+
+static func make_class_method_label(
+	name: String,
+	method_name: String
+) -> String:
+	return make_class_label(name) + "_method_" + method_name
+
+static func make_class_ref(name: String):
+	return make_ref(name, make_class_label(name))
+
+static func make_class_property_ref(name: String, property: String):
+	return make_ref(name, make_class_property_label(name, property))
+
+static func make_class_method_ref(name: String, method: String):
+	return make_ref(name, make_class_method_label(name, method))
+
+static func make_type_ref(type: String) -> String:
+	var result: String = parse_type(type)
+	
+	# Substitute class names for ref links
+	result = RegEx.create_from_string(r"([\w]+)").sub(
+		result,
+		make_class_ref("$1"),
+		true
+	)
+	
+	return result
+
+#endregion

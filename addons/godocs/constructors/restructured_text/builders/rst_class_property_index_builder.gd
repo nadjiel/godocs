@@ -14,11 +14,11 @@ func make_property_row(
 	
 	var type_output: String = make_ref(
 		type,
-		make_class_label_target(type)
+		make_class_label(type)
 	)
 	var name_output: String = make_ref(
 		name,
-		make_class_property_label_target(document_name, name)
+		make_class_property_label(document_name, name)
 	)
 	var default_value_output: String = ""
 	

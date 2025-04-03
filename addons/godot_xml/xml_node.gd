@@ -38,6 +38,12 @@ func get_child_by_name(name: String) -> XMLNode:
 	
 	return get_child_by_idx(idx)
 
+func get_children_by_name(name: String) -> Array[XMLNode]:
+	return children.filter(
+		func(child: XMLNode) -> bool:
+			return child.name == name
+	)
+
 ## Converts this node (and all of it's children) into a [Dictionary].
 ## Name is set as [code]__name__: name[/code].
 ## Content is set as [code]__content__: content[/code].

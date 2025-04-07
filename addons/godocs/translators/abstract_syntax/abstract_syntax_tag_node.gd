@@ -27,6 +27,9 @@ func _to_string() -> String:
 	
 	return result
 
+func translate(translator: SyntaxTranslator) -> String:
+	return translator.translate_tag(self)
+
 func stringify_children() -> String:
 	return children.reduce((
 		func(prev: String, next: AbstractSyntaxNode) -> String:

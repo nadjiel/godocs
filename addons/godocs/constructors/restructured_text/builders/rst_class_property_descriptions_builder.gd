@@ -23,7 +23,7 @@ func make_property_description(
 	var description_output: String = description
 	
 	if default_value != "" and default_value != "<unknown>":
-		default_value_output = make_code_block(default_value)
+		default_value_output = make_code(default_value)
 	
 	var result: String = "\n%s\n\n%s %s" % [
 		label_output,

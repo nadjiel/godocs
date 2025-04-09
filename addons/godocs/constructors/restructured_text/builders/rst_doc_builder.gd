@@ -75,17 +75,31 @@ static func make_bold(content: String) -> String:
 	
 	return result
 
-static func make_code_block(content: String, language: String = "") -> String:
-	var content_output: String = content
-	
-	if content.contains("\n"):
-		content_output = make_directive("code-block", [ language ], {}, content)
-	else:
-		content_output = "``%s``" % content
-	
-	var result: String = content_output
+static func make_italics(text: String) -> String:
+	var result: String = "*%s*" % text
 	
 	return result
+
+static func make_code(content: String) -> String:
+	return "``%s``" % content
+
+static func make_codeblock(content: String, language: String = "") -> String:
+	var content_output: String = content
+	
+	content_output = make_directive("code-block", [ language ], {}, content)
+	
+	var result: String = content_output + "\n"
+	
+	return result
+
+static func make_link(url: String, content: String = "") -> String:
+	if content.is_empty():
+		content = url
+	
+	return "`{label} <{url}>`_".format({
+		"label": content,
+		"url": url
+	})
 
 static func make_comment(content: String) -> String:
 	var content_output: String = content
@@ -192,6 +206,7 @@ static func make_ref(content: String, target: String) -> String:
 
 #region Formatting
 
+## Parses a class name from "A.B" to "A_B" so it works in refs and labels.
 static func parse_class_name(name: String) -> String:
 	return name.replace(".", "_")
 
@@ -268,7 +283,7 @@ static func make_property_signature(
 		if default_value == "<unknown>":
 			default_value = "unknown"
 		
-		result += " = " + make_code_block(default_value)
+		result += " = " + make_code(default_value)
 	
 	return result
 

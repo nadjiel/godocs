@@ -23,7 +23,7 @@ func make_property_row(
 	var default_value_output: String = ""
 	
 	if default_value != "" and default_value != "<unknown>":
-		default_value_output = make_code_block(default_value)
+		default_value_output = make_code(default_value)
 	
 	result.append(type_output)
 	result.append(name_output)

@@ -20,6 +20,9 @@ func _init(
 func _to_string() -> String:
 	var result: String = "<%s" % self.name
 	
+	if not params.is_empty():
+		result += " %s" % stringify_params()
+	
 	if not children.is_empty():
 		result += "\n%s\n" % stringify_children().indent("\t")
 	
@@ -29,6 +32,23 @@ func _to_string() -> String:
 
 func translate(translator: SyntaxTranslator) -> String:
 	return translator.translate_tag(self)
+
+func stringify_params() -> String:
+	var result: String = ""
+	
+	var keys: Array[String] = []
+	keys.assign(params.keys())
+	
+	for i: int in keys.size():
+		var key: String = keys[i]
+		var value: String = params[key]
+		
+		result += "%s=%s" % [ key, value ]
+		
+		if i < keys.size() - 1:
+			result += " "
+	
+	return result
 
 func stringify_children() -> String:
 	return children.reduce((

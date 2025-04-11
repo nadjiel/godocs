@@ -189,7 +189,7 @@ static func make_role(
 	var result: String = ":%s:" % name_output
 	
 	if target_output != "":
-		target_output = "<%s>" % target_output
+		target_output = " <%s>" % target_output
 	if content_output != "" or target_output != "":
 		result = "%s`%s%s`" % [
 			result,
@@ -207,61 +207,34 @@ static func make_ref(content: String, target: String) -> String:
 #region Formatting
 
 ## Parses a class name from "A.B" to "A_B" so it works in refs and labels.
-static func parse_class_name(name: String) -> String:
+static func parse_code_member_name(name: String) -> String:
 	return name.replace(".", "_")
 
-static func parse_type(type: String) -> String:
+static func parse_code_member_type(type: String) -> String:
 	var result: String = type
 	
 	# Substitute Array notation from "type[]" to "Array[type]"
 	result = (
 		RegEx.create_from_string(r"(\S+)\[\]").sub(result, "Array[$1]")
 	)
-	# Substitue Inner class notation from Class.InnerClass to Class_InnerClass
-	result = parse_class_name(result)
+	# Substitute Inner class notation from Class.InnerClass to Class_InnerClass
+	result = parse_code_member_name(result)
 	
 	return result
 
-static func make_class_label_target(name: String) -> String:
-	return "class_" + parse_class_name(name)
+static func make_code_member_label(name: String):
+	return make_label(parse_code_member_name(name))
 
-static func make_class_property_label_target(
-	name: String,
-	property_name: String
-) -> String:
-	return make_class_label_target(name) + "_property_" + property_name
+static func make_code_member_ref(full_name: String, name: String = full_name):
+	return make_ref(name, parse_code_member_name(full_name))
 
-static func make_class_method_label_target(
-	name: String,
-	method_name: String
-) -> String:
-	return make_class_label_target(name) + "_method_" + method_name
-
-static func make_class_label(name: String):
-	return make_label(make_class_label_target(name))
-
-static func make_class_property_label(name: String, property: String):
-	return make_label(make_class_property_label_target(name, property))
-
-static func make_class_method_label(name: String, method: String):
-	return make_label(make_class_method_label_target(name, method))
-
-static func make_class_ref(name: String):
-	return make_ref(name, make_class_label_target(name))
-
-static func make_class_property_ref(name: String, property: String):
-	return make_ref(name, make_class_property_label_target(name, property))
-
-static func make_class_method_ref(name: String, method: String):
-	return make_ref(name, make_class_method_label_target(name, method))
-
-static func make_type_ref(type: String) -> String:
-	var result: String = parse_type(type)
+static func make_code_member_type_ref(type: String) -> String:
+	var result: String = parse_code_member_type(type)
 	
 	# Substitute class names for ref links
 	result = RegEx.create_from_string(r"([\w]+)").sub(
 		result,
-		make_class_ref("$1"),
+		make_code_member_ref("$1"),
 		true
 	)
 	
@@ -275,7 +248,7 @@ static func make_property_signature(
 	var result: String = ""
 	
 	if type != "":
-		result += make_type_ref(type) + " "
+		result += make_code_member_type_ref(type) + " "
 	
 	result += name
 	
@@ -295,11 +268,11 @@ static func make_method_signature(
 	var result: String = ""
 	
 	if return_type != "":
-		result += make_type_ref(return_type) + " "
+		result += make_code_member_type_ref(return_type) + " "
 	
 	result += name
 	
-	var params_output: String = "("
+	var params_output: String = "\\("
 	
 	for i: int in params.size():
 		var param: Dictionary[String, String] = {}
@@ -314,7 +287,7 @@ static func make_method_signature(
 		if i < params.size() - 1:
 			params_output += ", "
 	
-	params_output += ")"
+	params_output += "\\)"
 	
 	result += params_output
 	

@@ -16,8 +16,8 @@ func make_property_description(
 	var name: String = member_node.attributes.get("name", "")
 	var default_value: String = member_node.attributes.get("default", "")
 	
-	var label_output: String = make_class_property_label(document_name, name)
-	var type_output: String = make_type_ref(type)
+	var label_output: String = make_code_member_label(".".join([ document_name, name ]))
+	var type_output: String = make_code_member_type_ref(type)
 	var name_output: String = name
 	var default_value_output: String = ""
 	var description_output: String = description
@@ -59,7 +59,7 @@ func make_properties_descriptions(document: XMLDocument) -> String:
 	
 	return result
 
-func _build(db: ClassDocDB) -> String:
+func build(db: ClassDocDB) -> String:
 	var document: XMLDocument = db.get_current_class_document()
 	var class_node: XMLNode = document.root
 	

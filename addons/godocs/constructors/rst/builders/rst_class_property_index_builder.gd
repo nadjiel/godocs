@@ -14,11 +14,11 @@ func make_property_row(
 	
 	var type_output: String = make_ref(
 		type,
-		make_class_label_target(type)
+		parse_code_member_name(type)
 	)
 	var name_output: String = make_ref(
 		name,
-		make_class_property_label_target(document_name, name)
+		parse_code_member_name(".".join([ document_name, name ]))
 	)
 	var default_value_output: String = ""
 	
@@ -46,7 +46,7 @@ func make_property_matrix(document: XMLDocument) -> Array[Array]:
 	
 	return data_matrix
 
-func _build(db: ClassDocDB) -> String:
+func build(db: ClassDocDB) -> String:
 	var document: XMLDocument = db.get_current_class_document()
 	var class_node: XMLNode = document.root
 	

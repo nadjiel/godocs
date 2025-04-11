@@ -20,7 +20,7 @@ func make_param_output(param_node: XMLNode) -> String:
 	var type: String = param_node.attributes.get("type", "")
 	
 	var name_output: String = name
-	var type_output: String = make_type_ref(type)
+	var type_output: String = make_code_member_type_ref(type)
 	
 	var result: String = "%s: %s" % [
 		name_output,
@@ -41,8 +41,11 @@ func make_method_row(
 	var name: String = method_node.attributes.get("name", "")
 	var return_type: String = return_node.attributes.get("type", "")
 	
-	var return_type_output: String = make_type_ref(return_type)
-	var name_output: String = make_class_method_ref(document_name, name)
+	var return_type_output: String = make_code_member_type_ref(return_type)
+	var name_output: String = make_ref(
+		name,
+		parse_code_member_name(".".join([ document_name, name ])
+	))
 	var params_output: String = make_params_output(param_nodes)
 	var signature_output: String = "%s(%s)" % [
 		name_output,
@@ -69,7 +72,7 @@ func make_method_matrix(document: XMLDocument) -> Array[Array]:
 	
 	return matrix
 
-func _build(db: ClassDocDB) -> String:
+func build(db: ClassDocDB) -> String:
 	var document: XMLDocument = db.get_current_class_document()
 	var class_node: XMLNode = document.root
 	

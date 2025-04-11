@@ -2,7 +2,7 @@
 class_name RSTClassDescriptionBuilder
 extends RSTDocBuilder
 
-func _build(db: ClassDocDB) -> String:
+func build(db: ClassDocDB) -> String:
 	var document: XMLDocument = db.get_current_class_document()
 	var class_node: XMLNode = document.root
 	var description_node: XMLNode = class_node.get_child_by_name("description")

@@ -14,6 +14,12 @@ func construct(db: ClassDocDB) -> Error:
 		
 		db.current_class = _doc_name
 		
+		# Ignore classes without class_name, as their name
+		# would be the "path/to/them", which is not valid for
+		# the file system.
+		if _doc_name.contains("/"):
+			continue
+		
 		error = super.construct(db)
 		
 		if error != OK:

@@ -26,7 +26,7 @@ func write_to_file(path: String, content: String) -> Error:
 	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 	
 	if file == null:
-		return file.get_open_error()
+		return ERR_FILE_CANT_WRITE
 	
 	file.store_string(content)
 	
@@ -35,7 +35,12 @@ func write_to_file(path: String, content: String) -> Error:
 	return OK
 
 func _get_doc_path() -> String:
-	return "%s.%s" % [
-		build_path.path_join(_doc_name),
-		build_format
-	]
+	if _doc_name.is_empty():
+		return ""
+	
+	var result: String = build_path.path_join(_doc_name)
+	
+	if not build_format.is_empty():
+		result += "." + build_format
+	
+	return result

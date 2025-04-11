@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cmhjtr7aayg8g"]
+
+[ext_resource type="Script" uid="uid://dq8nmtfuu62wq" path="res://test/manual/doc_parser/test_doc_parser.gd" id="1_r7rmc"]
+
+[node name="TestDocParser" type="Node2D"]
+script = ExtResource("1_r7rmc")

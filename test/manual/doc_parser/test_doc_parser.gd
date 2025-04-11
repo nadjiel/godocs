@@ -1,7 +1,7 @@
 
 extends Node
 
-var parser := DocParser.new("res://docs/")
+var parser := DocParser.new("res://test/docs/")
 
 func _ready() -> void:
 	prints("Result:", error_string(parser.parse()), "\n")

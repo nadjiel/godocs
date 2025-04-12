@@ -70,6 +70,29 @@ static func make_table_content(
 	
 	return result
 
+static func make_heading(content: String, level: int) -> String:
+	var character: String = ""
+	var line = ""
+	
+	var result: String = ""
+	
+	if level == 1 or level == 2:
+		character = "="
+		line = character.repeat(content.length())
+		
+		if level == 1:
+			result += line + "\n"
+	
+	result += content + "\n"
+	
+	if level == 3:
+		character = "-"
+		line = character.repeat(content.length())
+	
+	result += line + "\n"
+	
+	return result
+
 static func make_bold(content: String) -> String:
 	var result: String = "**%s**" % content
 	

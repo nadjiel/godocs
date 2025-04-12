@@ -3,6 +3,9 @@ class_name RSTClassDescriptionBuilder
 extends RSTDocBuilder
 
 func build(db: ClassDocDB) -> String:
+	var bbcode: SyntaxInterpreter = BBCodeSyntaxInterpreter.new()
+	var rst: SyntaxTranslator = RSTSyntaxTranslator.new()
+	
 	var document: XMLDocument = db.get_current_class_document()
 	var class_node: XMLNode = document.root
 	var description_node: XMLNode = class_node.get_child_by_name("description")
@@ -13,15 +16,16 @@ func build(db: ClassDocDB) -> String:
 		return ""
 	
 	var title := "Description"
-	var title_size: int = title.length()
 	
-	var title_output: String = title
-	var underline_output: String = "-".repeat(title_size)
-	var description_output: String = description
+	var title_output: String = make_heading(title, 2)
+	var description_output: String = ( bbcode
+		.interpret(description)
+		.translate(rst)
+	)
+	description_output = fix_short_code_member_refs(description_output, db)
 	
-	var result: String = "\n%s\n%s\n\n%s\n" % [
+	var result: String = "\n%s\n%s\n" % [
 		title_output,
-		underline_output,
 		description_output
 	]
 	

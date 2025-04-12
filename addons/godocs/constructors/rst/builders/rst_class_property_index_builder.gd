@@ -10,16 +10,11 @@ func make_property_row(
 	
 	var type: String = member_node.attributes.get("type", "")
 	var name: String = member_node.attributes.get("name", "")
+	var full_name: String = ".".join([ document_name, name ])
 	var default_value: String = member_node.attributes.get("default", "")
 	
-	var type_output: String = make_ref(
-		type,
-		parse_code_member_name(type)
-	)
-	var name_output: String = make_ref(
-		name,
-		parse_code_member_name(".".join([ document_name, name ]))
-	)
+	var type_output: String = make_code_member_type_ref(type)
+	var name_output: String = make_code_member_ref(full_name, name)
 	var default_value_output: String = ""
 	
 	if default_value != "" and default_value != "<unknown>":
@@ -54,16 +49,13 @@ func build(db: ClassDocDB) -> String:
 		return ""
 	
 	var title := "Property index"
-	var title_size: int = title.length()
 	var index: Array[Array] = make_property_matrix(document)
 	
-	var title_output: String = title
-	var underline_output: String = "-".repeat(title_size)
+	var title_output: String = make_heading(title, 2)
 	var index_output: String = make_table(index, [], { "widths": "auto" })
 	
-	var result: String = "\n%s\n%s\n\n%s\n" % [
+	var result: String = "\n%s\n%s\n" % [
 		title_output,
-		underline_output,
 		index_output
 	]
 	

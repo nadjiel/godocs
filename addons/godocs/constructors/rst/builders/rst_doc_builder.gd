@@ -102,18 +102,17 @@ static func make_link(url: String, content: String = "") -> String:
 	})
 
 static func make_comment(content: String) -> String:
-	var content_output: String = content
+	var result: String = COMMENT_PREFIX + content
 	
-	var result: String = COMMENT_PREFIX
+	return result
+
+static func make_comment_block(content: String) -> String:
+	var prefix_size: int = COMMENT_PREFIX.length()
+	var indent: String = " ".repeat(prefix_size)
 	
-	if content.contains("\n"):
-		var prefix_size: int = COMMENT_PREFIX.length()
-		var indent: String = " ".repeat(prefix_size)
-		content_output = content_output.indent(indent)
-		
-		result += "\n"
+	var content_output: String = content.indent(indent)
 	
-	result += content_output
+	var result: String = COMMENT_PREFIX + "\n" + content_output
 	
 	return result
 

@@ -222,11 +222,14 @@ static func parse_code_member_type(type: String) -> String:
 	
 	return result
 
+static func make_code_member_label_target(name: String) -> String:
+	return "godocs_" + parse_code_member_name(name)
+
 static func make_code_member_label(name: String):
-	return make_label(parse_code_member_name(name))
+	return make_label(make_code_member_label_target(name))
 
 static func make_code_member_ref(full_name: String, name: String = full_name):
-	return make_ref(name, parse_code_member_name(full_name))
+	return make_ref(name, make_code_member_label_target(full_name))
 
 static func make_code_member_type_ref(type: String) -> String:
 	var result: String = parse_code_member_type(type)

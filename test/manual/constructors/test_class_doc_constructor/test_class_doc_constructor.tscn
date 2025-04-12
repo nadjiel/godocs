@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b75tdcsq0ffdt"]
+
+[ext_resource type="Script" uid="uid://d20mgk5yax6os" path="res://test/manual/constructors/test_class_doc_constructor/test_class_doc_constructor.gd" id="1_xrm5o"]
+
+[node name="TestClassDocConstructor" type="Node2D"]
+script = ExtResource("1_xrm5o")

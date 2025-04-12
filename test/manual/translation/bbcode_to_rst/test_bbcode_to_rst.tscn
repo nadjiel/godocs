@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://csj3lhtpro4tc"]
-
-[ext_resource type="Script" uid="uid://bjfgjh21qb1j1" path="res://test/manual/translation/bbcode_to_rst/test_bbcode_to_rst.gd" id="1_51p0l"]
-
-[node name="TestBBCodeToRST" type="Node2D"]
-script = ExtResource("1_51p0l")

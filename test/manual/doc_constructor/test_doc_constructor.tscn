@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://djomdy8tljivq"]
-
-[ext_resource type="Script" uid="uid://bcudg7yhhqe3k" path="res://test/manual/doc_constructor/test_doc_constructor.gd" id="1_ptmtu"]
-
-[node name="TestDocConstructor" type="Node2D"]
-script = ExtResource("1_ptmtu")

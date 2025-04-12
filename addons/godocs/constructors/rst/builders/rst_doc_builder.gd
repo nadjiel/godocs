@@ -244,6 +244,51 @@ static func parse_code_member_type(type: String) -> String:
 	
 	return result
 
+static func fix_short_code_member_refs(text: String, db: ClassDocDB) -> String:
+	var doc: XMLDocument = db.get_current_class_document()
+	
+	if doc == null or doc.root == null:
+		return text
+	
+	var doc_name: String = doc.root.attributes.get("name", "")
+	
+	var possible_appearence_lists: Array[Array] = []
+	possible_appearence_lists.append(db.get_class_member_list("members"))
+	possible_appearence_lists.append(db.get_class_member_list("methods"))
+	possible_appearence_lists.append(db.get_class_member_list("signals"))
+	possible_appearence_lists.append(db.get_class_member_list("constants"))
+	possible_appearence_lists.append(db.get_class_member_list("theme_items"))
+	
+	var reg := RegEx.create_from_string(r":ref:`(?:[\S\s]*?)<godocs_(?<target>[\S\s]*?)>`")
+	
+	var prev_start: int = 0
+	var start: int = 0
+	var offset: int = 0
+	
+	while true:
+		var ref_match: RegExMatch = reg.search(text, start)
+		
+		if ref_match == null:
+			break
+		
+		var old_ref: String = ref_match.get_string()
+		var target_name: String = ref_match.get_string("target")
+		var full_target_name: String = ".".join([ doc_name, target_name ])
+		var new_ref: String = make_code_member_ref(full_target_name, target_name)
+		
+		offset += new_ref.length() - old_ref.length()
+		
+		prev_start = start
+		start = ref_match.get_end() + offset
+		
+		for possible_appearence_list: Array[String] in possible_appearence_lists:
+			if ref_match.get_string("target") in possible_appearence_list:
+				text = reg.sub(text, new_ref, false, prev_start)
+				
+				break
+	
+	return text
+
 static func make_code_member_label_target(name: String) -> String:
 	return "godocs_" + parse_code_member_name(name)
 

@@ -47,3 +47,27 @@ func get_class_inheritage(
 	inheritage.append(parent_name)
 	
 	return get_class_inheritage(parent_name, inheritage)
+
+func get_class_member_list(
+	members_node_name: String,
+	owner_name: String = current_class
+) -> Array[String]:
+	var doc: XMLDocument = get_class_document(owner_name)
+	
+	if doc == null:
+		return []
+	
+	var members_node: XMLNode = doc.root.get_child_by_name(members_node_name)
+	
+	if members_node == null:
+		return []
+	
+	var result: Array[String] = []
+	
+	for member_node: XMLNode in members_node.children:
+		if not member_node.attributes.has("name"):
+			continue
+		
+		result.append(member_node.attributes.get("name", ""))
+	
+	return result

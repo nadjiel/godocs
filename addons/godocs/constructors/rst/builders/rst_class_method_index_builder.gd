@@ -2,33 +2,6 @@
 class_name RSTClassMethodIndexBuilder
 extends RSTDocBuilder
 
-func make_params_output(param_nodes: Array[XMLNode]) -> String:
-	var params_output: String = ""
-	
-	for i: int in param_nodes.size():
-		params_output += make_param_output(param_nodes[i])
-		
-		if i < param_nodes.size() - 1:
-			params_output += ", "
-	
-	var result: String = params_output
-	
-	return result
-
-func make_param_output(param_node: XMLNode) -> String:
-	var name: String = param_node.attributes.get("name", "")
-	var type: String = param_node.attributes.get("type", "")
-	
-	var name_output: String = name
-	var type_output: String = make_code_member_type_ref(type)
-	
-	var result: String = "%s: %s" % [
-		name_output,
-		type_output
-	]
-	
-	return result
-
 func make_method_row(
 	method_node: XMLNode,
 	document_name: String
@@ -39,18 +12,22 @@ func make_method_row(
 	var param_nodes: Array[XMLNode] = method_node.get_children_by_name("param")
 	
 	var name: String = method_node.attributes.get("name", "")
+	var full_name: String = ".".join([ document_name, name ])
 	var return_type: String = return_node.attributes.get("type", "")
 	
-	var return_type_output: String = make_code_member_type_ref(return_type)
-	var name_output: String = make_ref(
-		name,
-		parse_code_member_name(".".join([ document_name, name ])
+	var param_list: Array[Dictionary] = []
+	param_list.assign(param_nodes.map(
+		func(param_node: XMLNode) -> Dictionary[String, String]:
+			var d: Dictionary[String, String] = {}
+			d.assign(param_node.attributes)
+			
+			return d
 	))
-	var params_output: String = make_params_output(param_nodes)
-	var signature_output: String = "%s(%s)" % [
-		name_output,
-		params_output
-	]
+	
+	var return_type_output: String = make_code_member_type_ref(return_type)
+	var signature_output: String = make_method_signature(
+		full_name, "", param_list
+	)
 	
 	result.append(return_type_output)
 	result.append(signature_output)
@@ -80,16 +57,13 @@ func build(db: ClassDocDB) -> String:
 		return ""
 	
 	var title := "Method index"
-	var title_size: int = title.length()
 	var index: Array[Array] = make_method_matrix(document)
 	
-	var title_output: String = title
-	var underline_output: String = "-".repeat(title_size)
+	var title_output: String = make_heading(title, 2)
 	var index_output: String = make_table(index, [], { "widths": "auto" })
 	
-	var result: String = "\n%s\n%s\n\n%s\n" % [
+	var result: String = "\n%s\n%s\n" % [
 		title_output,
-		underline_output,
 		index_output
 	]
 	

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://mpypsbug2f7m"]
+
+[ext_resource type="Script" uid="uid://cdub2e1w8d6gd" path="res://test/manual/constructors/rst/builders/test_rst_class_property_description_builder/test_rst_class_property_description_builder.gd" id="1_7kyxb"]
+
+[node name="TestRSTClassPropertyDescriptionBuilder" type="Node2D"]
+script = ExtResource("1_7kyxb")

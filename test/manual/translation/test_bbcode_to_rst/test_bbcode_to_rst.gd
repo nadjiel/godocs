@@ -50,4 +50,4 @@ func _ready() -> void:
 	print_rich(text)
 	
 	print("AFTER:")
-	prints("Result:", interpreter.parse(text).translate(translator))
+	prints("Result:", interpreter.interpret(text).translate(translator))

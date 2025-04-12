@@ -154,5 +154,5 @@ func parse_text(
 	
 	return root
 
-func parse(text: String) -> AbstractSyntaxTagNode:
+func interpret(text: String) -> AbstractSyntaxTagNode:
 	return parse_text(text)

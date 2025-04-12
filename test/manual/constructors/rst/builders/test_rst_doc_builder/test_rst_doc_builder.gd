@@ -1,7 +1,19 @@
 
 extends Node
 
+var parser := DocParser.new("res://test/docs/xml/GodocsCLI.xml")
+
+var broken_refs_text: String = "
+:ref:`godocs <godocs_godocs>`
+:ref:`parse_args <godocs_parse_args>`
+:ref:`GodocsCLI.args <godocs_GodocsCLI_args>`
+:ref:`Godocs.parser <godocs_Godocs_parser>`
+"
+
 func _ready() -> void:
+	parser.parse()
+	parser.db.current_class = "GodocsCLI"
+	
 	print_rich("[b]BOLD:[/b] ", RSTDocBuilder.make_bold("bold"))
 	print_rich("[b]ITALICS:[/b] ", RSTDocBuilder.make_italics("italics"))
 	print_rich("[b]CODE:[/b] ", RSTDocBuilder.make_code("code"))
@@ -21,3 +33,11 @@ func _ready() -> void:
 	print_rich("[b]COMMENT_BLOCK:[/b]\n", RSTDocBuilder.make_comment_block("Long comment"))
 	print_rich("[b]CODE_BLOCK:[/b]\n", RSTDocBuilder.make_codeblock('print("Hello, World!")', "GDScript"))
 	print_rich("[b]TABLE:[/b]\n", RSTDocBuilder.make_table([ [ "1", "2" ], [ "3", "4" ] ]))
+	
+	print("")
+	
+	print_rich("[b]BROKEN_REFS:[/b]\n", broken_refs_text)
+	print_rich(
+		"[b]FIXED_REFS:[/b]\n",
+		RSTDocBuilder.fix_short_code_member_refs(broken_refs_text, parser.db)
+	)

@@ -331,7 +331,7 @@ static func make_property_signature(
 	return result
 
 static func make_method_signature(
-	name: String,
+	full_name: String,
 	return_type: String = "",
 	params: Array[Dictionary] = []
 ) -> String:
@@ -340,7 +340,11 @@ static func make_method_signature(
 	if return_type != "":
 		result += make_code_member_type_ref(return_type) + " "
 	
-	result += name
+	var name_parts: PackedStringArray = full_name.rsplit(".", false, 1)
+	
+	var name: String = name_parts[1] if name_parts.size() > 1 else full_name
+	
+	result += make_code_member_ref(full_name, name)
 	
 	var params_output: String = "\\("
 	

@@ -311,7 +311,7 @@ static func make_code_member_type_ref(type: String) -> String:
 	return result
 
 static func make_property_signature(
-	name: String,
+	full_name: String,
 	type: String = "",
 	default_value: String = ""
 ) -> String:
@@ -320,7 +320,11 @@ static func make_property_signature(
 	if type != "":
 		result += make_code_member_type_ref(type) + " "
 	
-	result += name
+	var name_parts: PackedStringArray = full_name.rsplit(".", false, 1)
+	
+	var name: String = name_parts[1] if name_parts.size() > 1 else full_name
+	
+	result += make_code_member_ref(full_name, name)
 	
 	if default_value != "":
 		if default_value == "<unknown>":

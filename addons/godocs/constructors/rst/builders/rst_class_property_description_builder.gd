@@ -1,11 +1,16 @@
 
-class_name RSTClassPropertyDescriptionsBuilder
+class_name RSTClassPropertyDescriptionBuilder
 extends RSTDocBuilder
+
+var bbcode: SyntaxInterpreter = BBCodeSyntaxInterpreter.new()
+
+var rst: SyntaxTranslator = RSTSyntaxTranslator.new()
 
 func make_property_description(
 	member_node: XMLNode,
-	document: XMLDocument
+	db: ClassDocDB
 ) -> String:
+	var document: XMLDocument = db.get_current_class_document()
 	var document_name: String = document.root.attributes.get("name", "")
 	var description: String = member_node.content
 	
@@ -14,31 +19,30 @@ func make_property_description(
 	
 	var type: String = member_node.attributes.get("type", "")
 	var name: String = member_node.attributes.get("name", "")
+	var full_name: String = ".".join([ document_name, name ])
 	var default_value: String = member_node.attributes.get("default", "")
 	
-	var label_output: String = make_code_member_label(".".join([ document_name, name ]))
-	var type_output: String = make_code_member_type_ref(type)
-	var name_output: String = name
-	var default_value_output: String = ""
-	var description_output: String = description
+	var label_output: String = make_code_member_label(full_name)
+	var signature_output: String = make_property_signature(
+		full_name, type, default_value
+	)
+	var description_output: String = ( bbcode
+		.interpret(description)
+		.translate(rst)
+	)
+	description_output = fix_short_code_member_refs(description_output, db)
 	
-	if default_value != "" and default_value != "<unknown>":
-		default_value_output = make_code(default_value)
-	
-	var result: String = "\n%s\n\n%s %s" % [
+	var result: String = "\n%s\n\n%s" % [
 		label_output,
-		type_output,
-		name_output
+		signature_output
 	]
 	
-	if default_value_output != "":
-		result += " = %s" % default_value_output
-	
-	result += "\n\n%s\n" % description_output
+	result += "\n\n%s\n\n" % description_output
 	
 	return result
 
-func make_properties_descriptions(document: XMLDocument) -> String:
+func make_properties_descriptions(db: ClassDocDB) -> String:
+	var document: XMLDocument = db.get_current_class_document()
 	var members_node: XMLNode = document.root.get_child_by_name("members")
 	
 	if members_node == null:
@@ -49,7 +53,7 @@ func make_properties_descriptions(document: XMLDocument) -> String:
 	for member_node: XMLNode in members_node.children:
 		var description_output: String = make_property_description(
 			member_node,
-			document
+			db
 		)
 		
 		if description_output == "":
@@ -64,18 +68,15 @@ func build(db: ClassDocDB) -> String:
 	var class_node: XMLNode = document.root
 	
 	var title := "Property descriptions"
-	var title_size: int = title.length()
 	
-	var title_output: String = title
-	var underline_output: String = "-".repeat(title_size)
-	var descriptions_output: String = make_properties_descriptions(document)
+	var title_output: String = make_heading(title, 2)
+	var descriptions_output: String = make_properties_descriptions(db)
 	
 	if descriptions_output == "":
 		return ""
 	
-	var result: String = "\n%s\n%s\n\n%s\n" % [
+	var result: String = "\n%s\n%s" % [
 		title_output,
-		underline_output,
 		descriptions_output
 	]
 	

@@ -49,7 +49,7 @@ func get_children_by_name(name: String) -> Array[XMLNode]:
 ## Content is set as [code]__content__: content[/code].
 ## CDATA is set as [code]__cdata__: [cdata, ...][/code].
 ## Attributes are set as [code]attrs: {attr_name: attr_value}[/code].
-## Children are set as [code]children: {child_name: child_dict}[/code].
+## Children are set as [code]children: [child_dict, ...][/code].
 func to_dict() -> Dictionary:
 	var output := {}
 
@@ -57,13 +57,10 @@ func to_dict() -> Dictionary:
 	output["__content__"] = self.content
 	output["__cdata__"] = self.cdata
 	output["attrs"] = self.attributes
-
-	var children_dict := {}
-
-	for child in self.children:
-		children_dict[child.name] = child.to_dict()
-
-	output["children"] = children_dict
+	output["children"] = self.children.map(
+		func(child: XMLNode) -> Dictionary:
+			return child.to_dict()
+	)
 
 	return output
 

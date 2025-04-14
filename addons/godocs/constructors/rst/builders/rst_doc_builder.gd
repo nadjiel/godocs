@@ -199,6 +199,16 @@ static func make_table(
 	
 	return result
 
+static func make_toctree(
+	options: Dictionary[String, String] = {},
+	content: Array[String] = []
+) -> String:
+	var content_output: String = "\n".join(content)
+	
+	var result: String = make_directive("toctree", [], options, content_output)
+	
+	return result
+
 static func make_role(
 	name: String,
 	content: String = "",

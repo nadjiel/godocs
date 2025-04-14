@@ -6,7 +6,7 @@ extends DocBuilder
 
 const COMMENT_PREFIX: String = ".. "
 
-static func make_table_row_separator(
+static func _make_table_row_separator(
 	col_widths: Array[int],
 	h_sep: String = "-",
 	joint: String = "+"
@@ -14,11 +14,11 @@ static func make_table_row_separator(
 	var result := joint
 	
 	for width: int in col_widths:
-		result += "-".repeat(width) + "+"
+		result += h_sep.repeat(width) + joint
 	
 	return result
 
-static func make_table_row(
+static func _make_table_row(
 	row: Array[String],
 	col_widths: Array[int],
 	v_sep: String = "|"
@@ -36,7 +36,7 @@ static func make_table_row(
 	
 	return result
 
-static func make_table_content(
+static func _make_table_content(
 	matrix: Array[Array],
 	h_sep: String = "-",
 	v_sep: String = "|",
@@ -59,14 +59,14 @@ static func make_table_content(
 		
 		col_widths.append(max_width)
 	
-	var result: String = make_table_row_separator(col_widths, h_sep, joint) + "\n"
+	var result: String = _make_table_row_separator(col_widths, h_sep, joint) + "\n"
 	
 	for row_i: int in matrix.size():
 		var row: Array[String] = []
 		row.assign(matrix[row_i])
 		
-		result += make_table_row(row, col_widths, v_sep) + "\n"
-		result += make_table_row_separator(col_widths, h_sep, joint) + "\n"
+		result += _make_table_row(row, col_widths, v_sep) + "\n"
+		result += _make_table_row_separator(col_widths, h_sep, joint) + "\n"
 	
 	return result
 
@@ -193,7 +193,7 @@ static func make_table(
 	arguments: Array[String] = [],
 	options: Dictionary[String, String] = {}
 ) -> String:
-	var content_output: String = make_table_content(content_matrix)
+	var content_output: String = _make_table_content(content_matrix)
 	
 	var result: String = make_directive("table", arguments, options, content_output)
 	

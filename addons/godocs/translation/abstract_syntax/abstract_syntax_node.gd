@@ -4,6 +4,7 @@
 ## [b]Abstract Syntax Tree[/b] (AST).[br]
 ## To represent different kinds of information, this class is extended by the
 ## [AbstractSyntaxTextNode] and [AbstractSyntaxTagNode] classes.
+## TODO: Add documentation about the default AST used in the Godocs plugin.
 class_name AbstractSyntaxNode
 extends RefCounted
 

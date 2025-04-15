@@ -49,12 +49,12 @@ func _parse_constructor(constructor: Variant) -> Script:
 func _init(
 	source_path: String,
 	build_path: String,
-	constructor: ConstructorType = ConstructorType.RST
+	constructor: Variant = ConstructorType.RST
 ) -> void:
 	self.Constructor = _parse_constructor(constructor)
 	
-	parser = DocParser.new(source_path)
-	constructor = Constructor.new(build_path)
+	self.parser = DocParser.new(source_path)
+	self.constructor = Constructor.new(build_path)
 
 ## The [method execute] method is the entry point for this class to
 ## realize its task.[br]

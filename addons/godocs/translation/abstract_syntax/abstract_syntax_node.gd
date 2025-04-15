@@ -1,10 +1,10 @@
+# TODO: Add documentation about the default AST used in the Godocs plugin.
 ## [AbstractSyntaxNode] models a node used to represent an Abstract Syntax.
 ## 
 ## This class is the basic piece of data that constructs an
 ## [b]Abstract Syntax Tree[/b] (AST).[br]
 ## To represent different kinds of information, this class is extended by the
 ## [AbstractSyntaxTextNode] and [AbstractSyntaxTagNode] classes.
-## TODO: Add documentation about the default AST used in the Godocs plugin.
 class_name AbstractSyntaxNode
 extends RefCounted
 

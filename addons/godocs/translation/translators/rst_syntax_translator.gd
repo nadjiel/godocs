@@ -1,3 +1,5 @@
+# TODO: Move code from RSTDocBuilder to this class.
+# TODO: Add unit tests.
 ## Transforms an [b]Abstract Syntax Tree[/b] into a
 ## [b]RestructuredText[/b] [String].
 ## 

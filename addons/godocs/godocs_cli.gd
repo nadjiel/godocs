@@ -16,10 +16,10 @@ var _godocs: Godocs
 var _args: Dictionary[String, String] = {}
 
 var _help: Dictionary[String, String] = {
-	"help": "Optional parameter that can be used to get this help information.\nIf nothing is passed to GodocsCLI, this is used by default",
+	"help": "Optional parameter that can be used to get this help information. If nothing is passed to GodocsCLI, this is used by default",
 	"src": "This mandatory parameter should specify the path to the folder with the XML documentation to parse",
 	"build": "This mandatory parameter should specify the path to the folder where the generated documentation should be stored",
-	"type": "Optional parameter that specifies what type of output is desired.\nYou can either pass one of {constructors} or a path to a Script that inherits from the DocConstructor class".format({
+	"type": "Optional parameter that specifies what type of output is desired. You can either pass one of {constructors} or a path to a Script that inherits from the DocConstructor class".format({
 		"constructors": Godocs.ConstructorType.keys()
 	}),
 }
@@ -42,7 +42,7 @@ func _initialize() -> void:
 	
 	error = _godocs.execute()
 	
-	_exit("Finished", error)
+	_handle_errors(error)
 
 func _exit(message: String, code: Error = OK) -> void:
 	var output: String = error_string(code) + ": " if code != OK else ""
@@ -70,7 +70,7 @@ func _parse_constructor_type(input: String) -> Variant:
 func _validate_args() -> Error:
 	if _args.has("help") or _args.is_empty():
 		_exit(_get_help())
-		return OK
+		return ERR_HELP
 	
 	if not _args.has("src"):
 		_exit('Mandatory source path not provided! Make sure to specify a "src" argument like this "src=path/to/xml/"', ERR_UNCONFIGURED)
@@ -85,10 +85,10 @@ func _make_help_list() -> String:
 	var result: String = ""
 	
 	for key: String in _help.keys() as Array[String]:
-		result += "\t- {command}: {description}.\n".format({
+		result += "- {command}: {description}.\n".format({
 			"command": key,
 			"description": _help[key]
-		})
+		}).indent("  ")
 	
 	return result
 
@@ -99,3 +99,13 @@ func _get_help() -> String:
 	result += _make_help_list()
 	
 	return result
+
+func _handle_errors(error: Error) -> void:
+	var message: String = "Documentation parsed to {build} directory!".format({
+		"build": _args.get("build", "")
+	})
+	
+	match(error):
+		ERR_DOES_NOT_EXIST: message = "Impossible to parse documentation! Verify if your paths point to valid directories."
+	
+	_exit(message, error)

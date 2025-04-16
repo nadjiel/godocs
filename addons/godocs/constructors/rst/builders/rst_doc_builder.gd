@@ -4,21 +4,6 @@ extends DocBuilder
 
 #region Formatting
 
-const GODOCS_REF_PREFIX: String = "godocs"
-
-static func normalize_code_member(member_reference: String) -> String:
-	var result: String = member_reference
-	
-	# Substitute Array notation from "type[]" to "Array[type]"
-	result = (
-		RegEx.create_from_string(r"(\S+)\[\]").sub(result, "Array[$1]")
-	)
-	# Substitute dot notation from "A.B" to "A_B" so it works better
-	# in refs and labels.
-	result = result.replace(".", "_")
-	
-	return result
-
 static func autocomplete_code_members(text: String, db: ClassDocDB) -> String:
 	var doc: XMLDocument = db.get_current_class_document()
 	
@@ -49,7 +34,7 @@ static func autocomplete_code_members(text: String, db: ClassDocDB) -> String:
 		var old_ref: String = ref_match.get_string()
 		var target_name: String = ref_match.get_string("target")
 		var full_target_name: String = ".".join([ doc_name, target_name ])
-		var new_ref: String = make_code_member_ref(full_target_name, target_name)
+		var new_ref: String = RSTSyntaxTranslator.make_code_member_ref(full_target_name, target_name)
 		
 		offset += new_ref.length() - old_ref.length()
 		
@@ -63,29 +48,6 @@ static func autocomplete_code_members(text: String, db: ClassDocDB) -> String:
 	
 	return text
 
-static func make_code_member_label_target(name: String) -> String:
-	var prefix: String = GODOCS_REF_PREFIX + "_"
-	
-	return "godocs_" + normalize_code_member(name)
-
-static func make_code_member_label(name: String):
-	return RSTSyntaxTranslator.make_label(make_code_member_label_target(name))
-
-static func make_code_member_ref(full_name: String, name: String = full_name):
-	return RSTSyntaxTranslator.make_ref(name, make_code_member_label_target(full_name))
-
-static func make_code_member_type_ref(type: String) -> String:
-	var result: String = normalize_code_member(type)
-	
-	# Substitute class names for ref links
-	result = RegEx.create_from_string(r"([\w]+)").sub(
-		result,
-		make_code_member_ref("$1"),
-		true
-	)
-	
-	return result
-
 static func make_property_signature(
 	full_name: String,
 	type: String = "",
@@ -94,13 +56,13 @@ static func make_property_signature(
 	var result: String = ""
 	
 	if type != "":
-		result += make_code_member_type_ref(type) + " "
+		result += RSTSyntaxTranslator.make_code_member_type_ref(type) + " "
 	
 	var name_parts: PackedStringArray = full_name.rsplit(".", false, 1)
 	
 	var name: String = name_parts[1] if name_parts.size() > 1 else full_name
 	
-	result += make_code_member_ref(full_name, name)
+	result += RSTSyntaxTranslator.make_code_member_ref(full_name, name)
 	
 	if default_value != "":
 		if default_value == "<unknown>":
@@ -118,13 +80,13 @@ static func make_method_signature(
 	var result: String = ""
 	
 	if return_type != "":
-		result += make_code_member_type_ref(return_type) + " "
+		result += RSTSyntaxTranslator.make_code_member_type_ref(return_type) + " "
 	
 	var name_parts: PackedStringArray = full_name.rsplit(".", false, 1)
 	
 	var name: String = name_parts[1] if name_parts.size() > 1 else full_name
 	
-	result += make_code_member_ref(full_name, name)
+	result += RSTSyntaxTranslator.make_code_member_ref(full_name, name)
 	
 	var params_output: String = "\\("
 	

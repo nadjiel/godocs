@@ -33,7 +33,7 @@ func make_method_description(
 			return result
 	))
 	
-	var label_output: String = make_code_member_label(".".join([ document_name, name ]))
+	var label_output: String = RSTSyntaxTranslator.make_code_member_label(".".join([ document_name, name ]))
 	var signature_output: String = RSTSyntaxTranslator.make_heading(make_method_signature(
 		full_name,
 		return_type,

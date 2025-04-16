@@ -22,7 +22,7 @@ func make_property_description(
 	var full_name: String = ".".join([ document_name, name ])
 	var default_value: String = member_node.attributes.get("default", "")
 	
-	var label_output: String = make_code_member_label(full_name)
+	var label_output: String = RSTSyntaxTranslator.make_code_member_label(full_name)
 	var signature_output: String = make_property_signature(
 		full_name, type, default_value
 	)

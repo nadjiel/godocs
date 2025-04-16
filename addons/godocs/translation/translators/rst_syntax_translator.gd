@@ -13,6 +13,8 @@ extends SyntaxTranslator
 
 const COMMENT_PREFIX: String = ".. "
 
+static var godocs_ref_prefix: String = "godocs"
+
 #region RST Syntax
 
 static func make_comment(content: String) -> String:
@@ -245,6 +247,47 @@ static func _make_directive(
 
 #endregion
 
+static func make_code_member_label(name: String):
+	return make_label(_make_code_member_label_target(name))
+
+static func make_code_member_ref(full_name: String, name: String = full_name):
+	return make_ref(name, _make_code_member_label_target(full_name))
+
+static func make_code_member_type_ref(full_name: String):
+	var result: String = _normalize_code_member(full_name)
+	
+	# Substitute class names for ref links
+	result = RegEx.create_from_string(r"([\w]+)").sub(
+		result,
+		make_code_member_ref("$1"),
+		true
+	)
+	
+	return result
+
+static func _normalize_code_member(member_reference: String) -> String:
+	var result: String = member_reference
+	
+	# Substitute Array notation from "type[]" to "Array[type]"
+	result = (
+		RegEx.create_from_string(r"(\S+)\[\]").sub(result, "Array[$1]")
+	)
+	# Substitute dot notation from "A.B" to "A_B" so it works better
+	# in refs and labels.
+	result = result.replace(".", "_")
+	
+	return result
+
+static func _make_code_member_label_target(name: String) -> String:
+	var result: String = ""
+	
+	if not godocs_ref_prefix.is_empty():
+		result += godocs_ref_prefix + "_"
+	
+	result += _normalize_code_member(name)
+	
+	return result
+
 ## The [method translate_text] method [b]overrides[/b] its parent
 ## [method SyntaxTranslator.translate_text]
 ## in order to define how this Translator performs the
@@ -282,7 +325,7 @@ func translate_tag(node: AbstractSyntaxTagNode) -> String:
 			content, node.params.get("language", "")
 		)
 		"link": return make_link(node.params.get("url"), content)
-		"reference": return RSTDocBuilder.make_code_member_ref(
+		"reference": return make_code_member_ref(
 			node.params.get("name", "")
 		)
 	

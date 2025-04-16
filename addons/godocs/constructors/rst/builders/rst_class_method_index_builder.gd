@@ -24,7 +24,7 @@ func make_method_row(
 			return d
 	))
 	
-	var return_type_output: String = make_code_member_type_ref(return_type)
+	var return_type_output: String = RSTSyntaxTranslator.make_code_member_type_ref(return_type)
 	var signature_output: String = make_method_signature(
 		full_name, "", param_list
 	)

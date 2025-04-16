@@ -13,8 +13,8 @@ func make_property_row(
 	var full_name: String = ".".join([ document_name, name ])
 	var default_value: String = member_node.attributes.get("default", "")
 	
-	var type_output: String = make_code_member_type_ref(type)
-	var name_output: String = make_code_member_ref(full_name, name)
+	var type_output: String = RSTSyntaxTranslator.make_code_member_type_ref(type)
+	var name_output: String = RSTSyntaxTranslator.make_code_member_ref(full_name, name)
 	var default_value_output: String = ""
 	
 	if default_value != "" and default_value != "<unknown>":

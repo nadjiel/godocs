@@ -1,4 +1,3 @@
-# TODO: Add unit tests.
 ## Transforms a [b]BBCode[/b] [String] into an [b]Abstract Syntax Tree[/b].
 ## 
 ## The [BBCodeSyntaxInterpreter] class can translate a text written in

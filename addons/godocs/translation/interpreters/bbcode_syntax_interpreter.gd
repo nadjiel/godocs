@@ -83,6 +83,8 @@ func _parse_reference_tag(el_match: RegExMatch) -> AbstractSyntaxTagNode:
 	
 	var params: Dictionary[String, Variant] = _parse_options(options)
 	
+	var result := AbstractSyntaxTagNode.new("tag")
+	
 	# Converts every possible reference to a "reference" Node.
 	match name:
 		"annotation",\
@@ -94,11 +96,21 @@ func _parse_reference_tag(el_match: RegExMatch) -> AbstractSyntaxTagNode:
 		"operator",\
 		"signal",\
 		"theme_item":
-			return AbstractSyntaxTagNode.new(
-				"reference", [], { "type": name, "name": params["list"][0] }
-			)
+			# Register data from references with format [<type> <name>].
+			result.name = "reference"
+			result.params = {
+				"type": name,
+				"name": params["list"][0],
+			}
+			
+			# If the reference is an operator ([operator <name> <symbol>]),
+			# also register its symbol.
+			if name == "operator":
+				result.params["symbol"] = params["list"][1]
+			
+			return result
 	
-	# If the reference is a [param something], converts to inline code.
+	# If the reference is a [param <name>], converts to inline code.
 	if name == "param":
 		return AbstractSyntaxTagNode.new(
 			"code", [ AbstractSyntaxTextNode.new(params["list"][0]) ]

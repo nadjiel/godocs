@@ -34,7 +34,7 @@ func make_method_description(
 	))
 	
 	var label_output: String = make_code_member_label(".".join([ document_name, name ]))
-	var signature_output: String = make_heading(make_method_signature(
+	var signature_output: String = RSTSyntaxTranslator.make_heading(make_method_signature(
 		full_name,
 		return_type,
 		param_list
@@ -85,7 +85,7 @@ func build(db: ClassDocDB) -> String:
 	
 	var title := "Method descriptions"
 	
-	var title_output: String = make_heading(title, 2)
+	var title_output: String = RSTSyntaxTranslator.make_heading(title, 2)
 	var descriptions_output: String = make_method_descriptions(db)
 	
 	if descriptions_output.is_empty():

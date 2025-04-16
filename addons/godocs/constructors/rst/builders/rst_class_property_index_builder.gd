@@ -18,7 +18,7 @@ func make_property_row(
 	var default_value_output: String = ""
 	
 	if default_value != "" and default_value != "<unknown>":
-		default_value_output = make_code(default_value)
+		default_value_output = RSTSyntaxTranslator.make_code(default_value)
 	
 	result.append(type_output)
 	result.append(name_output)
@@ -51,8 +51,8 @@ func build(db: ClassDocDB) -> String:
 	var title := "Property index"
 	var index: Array[Array] = make_property_matrix(document)
 	
-	var title_output: String = make_heading(title, 2)
-	var index_output: String = make_table(index, [], { "widths": "auto" })
+	var title_output: String = RSTSyntaxTranslator.make_heading(title, 2)
+	var index_output: String = RSTSyntaxTranslator.make_table(index, [], { "widths": "auto" })
 	
 	var result: String = "\n%s\n%s\n" % [
 		title_output,

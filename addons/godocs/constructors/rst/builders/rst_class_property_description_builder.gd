@@ -69,7 +69,7 @@ func build(db: ClassDocDB) -> String:
 	
 	var title := "Property descriptions"
 	
-	var title_output: String = make_heading(title, 2)
+	var title_output: String = RSTSyntaxTranslator.make_heading(title, 2)
 	var descriptions_output: String = make_properties_descriptions(db)
 	
 	if descriptions_output == "":

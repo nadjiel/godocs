@@ -17,7 +17,7 @@ func build(db: ClassDocDB) -> String:
 	
 	var title := "Description"
 	
-	var title_output: String = make_heading(title, 2)
+	var title_output: String = RSTSyntaxTranslator.make_heading(title, 2)
 	var description_output: String = ( bbcode
 		.interpret(description)
 		.translate(rst)

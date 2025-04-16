@@ -11,9 +11,9 @@ func make_inheritage_output(db: ClassDocDB) -> String:
 		var parent_output: String = make_code_member_ref(parent)
 		
 		if result == "":
-			result = "%s %s" % [ make_bold("Inherits:"), parent_output ]
+			result = "%s %s" % [ RSTSyntaxTranslator.make_bold("Inherits:"), parent_output ]
 		else:
-			result += " %s %s" % [ make_bold("<"), parent_output ]
+			result += " %s %s" % [ RSTSyntaxTranslator.make_bold("<"), parent_output ]
 	
 	return result
 
@@ -35,7 +35,7 @@ func build(db: ClassDocDB) -> String:
 	var brief_description: String = brief_description_node.content
 	
 	var label_output: String = make_code_member_label(name)
-	var title_output: String = make_heading(name, 1)
+	var title_output: String = RSTSyntaxTranslator.make_heading(name, 1)
 	var inheritage_output: String = make_inheritage_output(db)
 	var brief_description_output: String = ( bbcode
 		.interpret(brief_description)

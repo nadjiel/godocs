@@ -22,7 +22,7 @@ func build(db: ClassDocDB) -> String:
 		.interpret(description)
 		.translate(rst)
 	)
-	description_output = fix_short_code_member_refs(description_output, db)
+	description_output = autocomplete_code_members(description_output, db)
 	
 	var result: String = "\n%s\n%s\n" % [
 		title_output,

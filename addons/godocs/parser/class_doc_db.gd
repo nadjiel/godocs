@@ -2,6 +2,16 @@
 class_name ClassDocDB
 extends RefCounted
 
+const MEMBER_TYPES: Array[String] = [
+	"members",
+	"methods",
+	"signals",
+	"constants",
+	"annotations",
+	"operators",
+	"theme_items",
+]
+
 var data: Array[XMLDocument] = []
 
 var current_class: String = ""
@@ -48,26 +58,34 @@ func get_class_inheritage(
 	
 	return get_class_inheritage(parent_name, inheritage)
 
-func get_class_member_list(
-	members_node_name: String,
+func get_class_member_dict(
+	member_types: Array[String] = [],
 	owner_name: String = current_class
-) -> Array[String]:
+) -> Dictionary[String, Array]:
 	var doc: XMLDocument = get_class_document(owner_name)
 	
 	if doc == null:
-		return []
+		return {}
 	
-	var members_node: XMLNode = doc.root.get_child_by_name(members_node_name)
+	var result: Dictionary[String, Array] = {}
 	
-	if members_node == null:
-		return []
-	
-	var result: Array[String] = []
-	
-	for member_node: XMLNode in members_node.children:
-		if not member_node.attributes.has("name"):
+	for member_type: String in MEMBER_TYPES:
+		if not member_type in member_types and not member_types.is_empty():
 			continue
 		
-		result.append(member_node.attributes.get("name", ""))
+		var members_node: XMLNode = doc.root.get_child_by_name(member_type)
+		
+		if members_node == null:
+			continue
+		
+		var member_list: Array[String] = []
+		
+		for member_node: XMLNode in members_node.children:
+			if not member_node.attributes.has("name"):
+				continue
+			
+			member_list.append(member_node.attributes.get("name", ""))
+		
+		result[member_type] = member_list
 	
 	return result

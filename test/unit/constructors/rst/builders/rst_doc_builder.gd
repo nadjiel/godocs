@@ -77,7 +77,6 @@ func test_autocomplete_code_member_refs_works_with_default_prefix() -> void:
 	
 	assert_str(result).is_equal(":ref:`do_something <godocs_Class_do_something>` :ref:`store_something <godocs_Class_store_something>`")
 
-
 func test_autocomplete_code_member_refs_ignores_unknown_refs() -> void:
 	RSTSyntaxTranslator.godocs_ref_prefix = ""
 	
@@ -108,6 +107,8 @@ func test_autocomplete_code_member_refs_ignores_unknown_refs() -> void:
 	assert_str(result).is_equal(":ref:`do_something <Class_do_something>` :ref:`store_something <store_something>`")
 
 func test_make_property_signature_uses_all_data() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = "godocs"
+	
 	var result: String = RSTDocBuilder.make_property_signature(
 		"Class.store_something",
 		"String",
@@ -117,6 +118,8 @@ func test_make_property_signature_uses_all_data() -> void:
 	assert_str(result).is_equal(':ref:`String <godocs_String>` :ref:`store_something <godocs_Class_store_something>` = ``""``')
 
 func test_make_property_signature_can_make_no_ref() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = "godocs"
+	
 	var result: String = RSTDocBuilder.make_property_signature(
 		"Class.store_something",
 		"String",
@@ -127,6 +130,8 @@ func test_make_property_signature_can_make_no_ref() -> void:
 	assert_str(result).is_equal(':ref:`String <godocs_String>` store_something = ``""``')
 
 func test_make_property_signature_works_without_default_value() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = "godocs"
+	
 	var result: String = RSTDocBuilder.make_property_signature(
 		"Class.store_something",
 		"String"
@@ -135,6 +140,8 @@ func test_make_property_signature_works_without_default_value() -> void:
 	assert_str(result).is_equal(':ref:`String <godocs_String>` :ref:`store_something <godocs_Class_store_something>`')
 
 func test_make_property_signature_works_without_type_value() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = "godocs"
+	
 	var result: String = RSTDocBuilder.make_property_signature(
 		"Class.store_something"
 	)
@@ -142,6 +149,8 @@ func test_make_property_signature_works_without_type_value() -> void:
 	assert_str(result).is_equal(':ref:`store_something <godocs_Class_store_something>`')
 
 func test_make_method_signature_uses_all_data() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = "godocs"
+	
 	var result: String = RSTDocBuilder.make_method_signature(
 		"Class.do_something",
 		"String",
@@ -154,6 +163,8 @@ func test_make_method_signature_uses_all_data() -> void:
 	assert_str(result).is_equal(':ref:`String <godocs_String>` :ref:`do_something <godocs_Class_do_something>`\\(:ref:`int <godocs_int>` a = ``0``, :ref:`float <godocs_float>` b = ``-1.0``\\)')
 	
 func test_make_method_signature_can_make_no_ref() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = "godocs"
+	
 	var result: String = RSTDocBuilder.make_method_signature(
 		"Class.do_something",
 		"String",
@@ -167,6 +178,8 @@ func test_make_method_signature_can_make_no_ref() -> void:
 	assert_str(result).is_equal(':ref:`String <godocs_String>` do_something\\(:ref:`int <godocs_int>` a = ``0``, :ref:`float <godocs_float>` b = ``-1.0``\\)')
 
 func test_make_method_signature_works_without_args_value() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = "godocs"
+	
 	var result: String = RSTDocBuilder.make_method_signature(
 		"Class.do_something",
 		"String",
@@ -175,6 +188,8 @@ func test_make_method_signature_works_without_args_value() -> void:
 	assert_str(result).is_equal(':ref:`String <godocs_String>` :ref:`do_something <godocs_Class_do_something>`\\(\\)')
 
 func test_make_method_signature_works_without_type_value() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = "godocs"
+	
 	var result: String = RSTDocBuilder.make_method_signature(
 		"Class.do_something",
 	)

@@ -24,6 +24,12 @@
 class_name RSTClassMethodIndexBuilder
 extends RSTDocBuilder
 
+## The [method build] method uses the information contained in a [ClassDocDB]
+## passed via the [param db] parameter to build a [b]section[/b]
+## for the documentation of the [b]class pointed by it[/b], with
+## a table with information about that class' methods.[br]
+## The format of the output of this method is described in the documentation
+## of this class, the [RSTClassMethodIndexBuilder].
 func build(db: ClassDocDB) -> String:
 	var doc: XMLDocument = db.get_current_class_document()
 	var class_node: XMLNode = doc.root

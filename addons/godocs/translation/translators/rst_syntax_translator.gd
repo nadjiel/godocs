@@ -247,13 +247,16 @@ static func _make_directive(
 
 #endregion
 
-static func make_code_member_label(name: String):
+static func make_code_member_label(name: String) -> String:
 	return make_label(_make_code_member_label_target(name))
 
-static func make_code_member_ref(full_name: String, name: String = full_name):
+static func make_code_member_ref(
+	full_name: String,
+	name: String = full_name
+) -> String:
 	return make_ref(name, _make_code_member_label_target(full_name))
 
-static func make_code_member_type_ref(full_name: String):
+static func make_code_member_type_ref(full_name: String) -> String:
 	var result: String = _normalize_code_member(full_name)
 	
 	# Substitute class names for ref links

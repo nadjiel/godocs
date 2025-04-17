@@ -103,7 +103,6 @@ func test_get_class_member_dict_includes_all_members() -> void:
 	assert_array(result["members"]).contains("store_something")
 	assert_array(result["methods"]).contains("do_something")
 
-
 func test_get_class_member_dict_excludes_filtered_members() -> void:
 	db = ClassDocDB.new()
 	

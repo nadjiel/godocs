@@ -77,6 +77,36 @@ func test_autocomplete_code_member_refs_works_with_default_prefix() -> void:
 	
 	assert_str(result).is_equal(":ref:`do_something <godocs_Class_do_something>` :ref:`store_something <godocs_Class_store_something>`")
 
+
+func test_autocomplete_code_member_refs_ignores_unknown_refs() -> void:
+	RSTSyntaxTranslator.godocs_ref_prefix = ""
+	
+	var text: String = ":ref:`do_something <do_something>` :ref:`store_something <store_something>`"
+	
+	var db := ClassDocDB.new()
+	
+	var doc := XMLDocument.new()
+	doc.root = XMLNode.new()
+	doc.root.name = "class"
+	doc.root.attributes.set("name", "Class")
+	
+	var method := XMLNode.new()
+	method.name = "method"
+	method.attributes.set("name", "do_something")
+	
+	var methods := XMLNode.new()
+	methods.name = "methods"
+	methods.children.append(method)
+	
+	doc.root.children.append(methods)
+	
+	db.data.append(doc)
+	db.current_class = "Class"
+	
+	var result: String = RSTDocBuilder.autocomplete_code_member_refs(text, db)
+	
+	assert_str(result).is_equal(":ref:`do_something <Class_do_something>` :ref:`store_something <store_something>`")
+
 func test_make_property_signature_uses_all_data() -> void:
 	var result: String = RSTDocBuilder.make_property_signature(
 		"Class.store_something",

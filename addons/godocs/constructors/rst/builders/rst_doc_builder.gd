@@ -47,23 +47,14 @@ static func autocomplete_code_member_refs(
 	
 	var doc_name: String = doc.root.attributes.get("name", "")
 	
-	# Helper that joins multiple Array of Strings into one.
-	var reducer: Callable = func(
-		prev: Array[String],
-		next: Array[String]
-	) -> Array[String]:
-		prev.append_array(next)
-		
-		return prev
-	
 	# Puts all code member names listed by the return of
-	# ClassDocDB.get_class_member_dict in an Array
+	# ClassDocDB.get_class_member_dict in a single Array
+	var class_members_by_type := db.get_class_member_dict()
+	var class_member_lists: Array[Array] = []
+	class_member_lists.assign(class_members_by_type.values())
 	var code_member_list: Array[String] = []
-	code_member_list.assign(
-		db.get_class_member_dict()\
-			.values()\
-			.reduce(reducer, [])
-	)
+	for class_member_list: Array[String] in class_member_lists:
+		code_member_list.append_array(class_member_list)
 	
 	var reg: RegEx = _get_code_member_ref_regex()
 	
@@ -225,6 +216,6 @@ static func _get_code_member_ref_regex() -> RegEx:
 	var prefix: String = RSTSyntaxTranslator._make_code_member_label_target("")
 	
 	var string: String = r":ref:`(?:[\S\s]*?)<{prefix}(?<target>[\S\s]*?)>`"\
-		.format({ "target": prefix })
+		.format({ "prefix": prefix })
 	
 	return RegEx.create_from_string(string)

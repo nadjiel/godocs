@@ -40,7 +40,7 @@ func build(db: ClassDocDB) -> String:
 	var brief_description_output: String = ( bbcode
 		.interpret(brief_description)
 		.translate(rst) )
-	brief_description_output = autocomplete_code_members(
+	brief_description_output = autocomplete_code_member_refs(
 		brief_description_output,
 		db
 	)

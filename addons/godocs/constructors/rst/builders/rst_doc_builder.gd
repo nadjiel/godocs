@@ -1,8 +1,45 @@
-
+## Provides utilities to use when creating RST documentation.
+## 
+## The [RSTDocBuilder] class can be [b]extended[/b] in order for its subclasses
+## to have better access to the utilities it provides.[br]
+## In this class are concentrated methods that help with the [b]creation of
+## repetitive parts[/b] of the documentation, like [b]property and method
+## signatures[/b].[br]
+## This class also provides an utility method that helps autocompleting
+## references to class members (properties, methods etc) based on the
+## context provided by a [ClassDocDB]. This is useful when parsing arbitrary
+## documentation texts written by users, which may contain references
+## without complete paths.[br]
+## See this class' methods in order to have a better understanding of what they
+## do exactly.
 class_name RSTDocBuilder
 extends DocBuilder
 
-static func autocomplete_code_member_refs(text: String, db: ClassDocDB) -> String:
+## The [method autocomplete_code_member_refs] method can be used to transform
+## incomplete references to class members contained in the [param text] argument
+## into complete ones, using the context provided by the [param db] argument.
+## [br]
+## This is useful when parsing arbitrary documentation written by users,
+## which may contain references without complete paths.[br]
+## As an example, supposing we have a [ClassDocDB] with its
+## [member ClassDocDB.current_class] pointing to a class with name
+## [code]"ClassName"[/code], calling this method would provoke the following
+## results:
+## [codeblock lang=rst]
+## .. Input
+## "Reference to :ref:`method <godocs_method>`"
+## .. Output
+## "Reference to :ref:`method <godocs_ClassName_method>`"
+## [/codeblock]
+## Note that, in order to know if a [code]ref[/code] was created by this
+## plugin and should be parsed, this method only handles the ones that have
+## their target starting with the prefix defined in the
+## [member RSTSyntaxTranslator.godocs_ref_prefix], which, by default
+## is [code]"godocs"[/code].
+static func autocomplete_code_member_refs(
+	text: String,
+	db: ClassDocDB,
+) -> String:
 	var doc: XMLDocument = db.get_current_class_document()
 	
 	if doc == null:
@@ -10,6 +47,7 @@ static func autocomplete_code_member_refs(text: String, db: ClassDocDB) -> Strin
 	
 	var doc_name: String = doc.root.attributes.get("name", "")
 	
+	# Helper that joins multiple Array of Strings into one.
 	var reducer: Callable = func(
 		prev: Array[String],
 		next: Array[String]
@@ -18,6 +56,8 @@ static func autocomplete_code_member_refs(text: String, db: ClassDocDB) -> Strin
 		
 		return prev
 	
+	# Puts all code member names listed by the return of
+	# ClassDocDB.get_class_member_dict in an Array
 	var code_member_list: Array[String] = []
 	code_member_list.assign(
 		db.get_class_member_dict()\
@@ -31,29 +71,57 @@ static func autocomplete_code_member_refs(text: String, db: ClassDocDB) -> Strin
 	var start: int = 0
 	var offset: int = 0
 	
+	# Searches for ref matches until none is found
 	while true:
 		var ref_match: RegExMatch = reg.search(text, start)
 		
+		# If no ref match is found cancel search
 		if ref_match == null:
 			break
 		
 		var old_ref: String = ref_match.get_string()
 		var target_name: String = ref_match.get_string("target")
 		var full_target_name: String = ".".join([ doc_name, target_name ])
-		var new_ref: String = RSTSyntaxTranslator.make_code_member_ref(full_target_name, target_name)
+		var new_ref: String = RSTSyntaxTranslator.make_code_member_ref(
+			full_target_name,
+			target_name,
+		)
 		
+		# Keeps track of how much the String length changes with each
+		# replacement
 		offset += new_ref.length() - old_ref.length()
 		
+		# Keeps track of the start of the previous match and the new one
 		prev_start = start
 		start = ref_match.get_end() + offset
 		
+		# Substitute the found ref only if it is pointing to
+		# one of the members of the current class from the db
 		if ref_match.get_string("target") in code_member_list:
 			text = reg.sub(text, new_ref, false, prev_start)
-			
-			break
 	
 	return text
 
+## The [method make_property_signature] method helps with the creation
+## of a RST text describing the signature of a property.[br]
+## The [param full_name] of the property to be described must be passed
+## (including the path that leads to it, like so:
+## [code]"Class.InnerClass.property"[/code]).[br]
+## Optionally, the [param type] stored by this property as well as its
+## [param default_value] can also be passed.[br]
+## Finally, a [code]bool[/code] [param make_ref] can be passed to tell
+## if the name of the property should be created as a reference to its
+## path, or just a plain text name.[br]
+## The output of this method looks like follows:
+## [codeblock lang=rst]
+## String :ref:`property <Class_property>` = ``""``
+## 
+## .. Or, with make_ref set to false
+## 
+## String property = ``""``
+## [/codeblock]
+## Note that any [code]refs[/code] created follow the [code]ref[/code]
+## creation rules from the [RSTSyntaxTranslator] class.
 static func make_property_signature(
 	full_name: String,
 	type: String = "",
@@ -79,6 +147,34 @@ static func make_property_signature(
 	
 	return result
 
+## The [method make_method_signature] method helps with the creation
+## of a RST text describing the signature of a method.[br]
+## The [param full_name] of the method to be described must be passed
+## (including the path that leads to it, like so:
+## [code]"Class.InnerClass.method"[/code]).[br]
+## Optionally, the [param type] returned by this method as well as its
+## [param params] can also be passed.[br]
+## The [param params] should follow the following format:
+## [codeblock lang=gdscript]
+## {
+##   "name": <String>, # The name of the param
+##   "type": <String>, # The type of the param
+##   "default": <String>, # The default value of the param
+## }
+## [/codeblock]
+## Finally, a [code]bool[/code] [param make_ref] can be passed to tell
+## if the name of the method should be created as a reference to its
+## path, or just a plain text name.[br]
+## The output of this method looks like follows:
+## [codeblock lang=rst]
+## String :ref:`method <Class_method>`\(int a = ``1``, int b = ``2``\)
+## 
+## .. Or, with make_ref set to false
+## 
+## String method\(int a = ``1``, int b = ``2``\)
+## [/codeblock]
+## Note that any [code]refs[/code] created follow the [code]ref[/code]
+## creation rules from the [RSTSyntaxTranslator] class.
 static func make_method_signature(
 	full_name: String,
 	return_type: String = "",
@@ -121,6 +217,10 @@ static func make_method_signature(
 	
 	return result
 
+# The method [method _get_code_member_ref_regex] is used to get a [RegEx]
+# able to find [code]refs[/code] created by this plugin based
+# on the prefix declared in the
+# [member RSTSyntaxTranslator.godocs_ref_prefix] property.
 static func _get_code_member_ref_regex() -> RegEx:
 	var prefix: String = RSTSyntaxTranslator._make_code_member_label_target("")
 	

@@ -100,8 +100,8 @@ func test_get_class_member_dict_includes_all_members() -> void:
 	
 	var result: Dictionary[String, Array] = db.get_class_member_dict([], "Class")
 	
-	assert_array(result["members"]).contains("store_something")
-	assert_array(result["methods"]).contains("do_something")
+	assert_array(result["members"]).contains([ "store_something" ])
+	assert_array(result["methods"]).contains([ "do_something" ])
 
 func test_get_class_member_dict_excludes_filtered_members() -> void:
 	db = ClassDocDB.new()
@@ -137,4 +137,4 @@ func test_get_class_member_dict_excludes_filtered_members() -> void:
 	)
 	
 	assert_dict(result).contains_not_keys([ "methods" ])
-	assert_array(result["members"]).contains("store_something")
+	assert_array(result["members"]).contains([ "store_something" ])

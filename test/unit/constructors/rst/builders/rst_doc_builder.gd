@@ -124,7 +124,8 @@ func test_make_property_signature_can_make_no_ref() -> void:
 		"Class.store_something",
 		"String",
 		'""',
-		false
+		false,
+		false,
 	)
 	
 	assert_str(result).is_equal(':ref:`String <godocs_String>` store_something = ``""``')

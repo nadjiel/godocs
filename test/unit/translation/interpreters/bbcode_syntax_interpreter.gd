@@ -21,10 +21,10 @@ func test_parse_options_organizes_key_values() -> void:
 	
 	interpreter = BBCodeSyntaxInterpreter.new()
 	
-	var result: Dictionary[String, String] = interpreter._parse_options(options)
+	var result: Dictionary[String, Variant] = interpreter._parse_options(options)
 	
 	assert_array(result["list"])\
-		.contains("option")
+		.contains([ "option" ])
 	assert_dict(result["map"])\
 		.contains_key_value("", "main_value")\
 		.contains_key_value("key", "value")

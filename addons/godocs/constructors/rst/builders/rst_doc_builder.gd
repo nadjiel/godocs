@@ -170,11 +170,14 @@ static func make_method_signature(
 	full_name: String,
 	return_type: String = "",
 	params: Array[Dictionary] = [],
+	is_static: bool = false,
 	make_ref: bool = true,
 ) -> String:
 	var result: String = ""
 	
-	if return_type != "":
+	if is_static:
+		result += "static "
+	if not return_type.is_empty():
 		result += RSTSyntaxTranslator.make_code_member_type_ref(return_type) + " "
 	
 	var name_parts: PackedStringArray = full_name.rsplit(".", false, 1)

@@ -72,6 +72,8 @@ func _make_method_description(
 	
 	var return_type: String = return_node.attributes.get("type", "")
 	var name: String = method_node.attributes.get("name", "")
+	var is_static: bool = method_node.attributes.get("qualifiers", "")\
+		.contains("static")
 	var full_name: String = ".".join([ doc_name, name ])
 	var param_list: Array[Dictionary] = []
 	
@@ -82,6 +84,7 @@ func _make_method_description(
 		full_name,
 		return_type,
 		param_list,
+		is_static,
 		false,
 	)
 	

@@ -173,6 +173,7 @@ func test_make_method_signature_can_make_no_ref() -> void:
 			{ "name": "b", "type": "float", "default": "-1.0"},
 		],
 		false,
+		false,
 	)
 	
 	assert_str(result).is_equal(':ref:`String <godocs_String>` do_something\\(:ref:`int <godocs_int>` a = ``0``, :ref:`float <godocs_float>` b = ``-1.0``\\)')

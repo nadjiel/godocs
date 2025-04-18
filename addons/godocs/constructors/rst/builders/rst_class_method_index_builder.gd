@@ -59,6 +59,8 @@ func _make_method_row(method_node: XMLNode, doc_name: String) -> Array[String]:
 	var param_nodes: Array[XMLNode] = method_node.get_children_by_name("param")
 	
 	var name: String = method_node.attributes.get("name", "")
+	var is_static: bool = method_node.attributes.get("qualifiers", "")\
+		.contains("static")
 	var full_name: String = ".".join([ doc_name, name ])
 	var return_type: String = return_node.attributes.get("type", "")
 	
@@ -70,7 +72,7 @@ func _make_method_row(method_node: XMLNode, doc_name: String) -> Array[String]:
 	var return_type_output: String = RSTSyntaxTranslator\
 		.make_code_member_type_ref(return_type)
 	var signature_output: String = make_method_signature(
-		full_name, "", param_list
+		full_name, "", param_list, is_static
 	)
 	
 	result.append(return_type_output)

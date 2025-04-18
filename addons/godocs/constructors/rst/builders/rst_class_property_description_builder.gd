@@ -49,7 +49,11 @@ func build(db: ClassDocDB) -> String:
 	var title := "Property descriptions"
 	
 	var title_output: String = RSTSyntaxTranslator.make_heading(title, 2)
-	var descriptions_output: String = _make_properties_descriptions(db)
+	var descriptions_output: String = make_member_descriptions(
+		"members",
+		_make_property_description,
+		db,
+	)
 	
 	if descriptions_output.is_empty():
 		return ""
@@ -94,26 +98,5 @@ func _make_property_description(
 		signature_output,
 		description_output,
 	]
-	
-	return result
-
-func _make_properties_descriptions(db: ClassDocDB) -> String:
-	var doc: XMLDocument = db.get_current_class_document()
-	var members_node: XMLNode = doc.root.get_child_by_name("members")
-	
-	if members_node == null:
-		return ""
-	
-	var result: String = ""
-	
-	for member_node: XMLNode in members_node.children:
-		var description_output: String = _make_property_description(
-			member_node, db
-		)
-		
-		if description_output.is_empty():
-			continue
-		
-		result += description_output
 	
 	return result

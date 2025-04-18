@@ -215,6 +215,29 @@ static func make_method_signature(
 	
 	return result
 
+static func make_member_descriptions(
+	member_type: String,
+	description_maker: Callable,
+	db: ClassDocDB,
+) -> String:
+	var doc: XMLDocument = db.get_current_class_document()
+	var node_group: XMLNode = doc.root.get_child_by_name(member_type)
+	
+	if node_group == null:
+		return ""
+	
+	var result: String = ""
+	
+	for node: XMLNode in node_group.children:
+		var description_output: String = description_maker.call(node, db)
+		
+		if description_output.is_empty():
+			continue
+		
+		result += description_output
+	
+	return result
+
 # The method [method _get_code_member_ref_regex] is used to get a [RegEx]
 # able to find [code]refs[/code] created by this plugin based
 # on the prefix declared in the

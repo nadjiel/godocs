@@ -70,12 +70,23 @@ static func autocomplete_code_member_refs(
 		if ref_match == null:
 			break
 		
+		
 		var old_ref: String = ref_match.get_string()
-		var target_name: String = ref_match.get_string("target")
-		var full_target_name: String = ".".join([ doc_name, target_name ])
+		var old_target_name: String = ref_match.get_string("target")
+		# Update to a new target name in case we're dealing with an enum
+		# constant. (In which case, the enum name isn't mentioned in the BBCode
+		# original docs).
+		var new_target_name: String = old_target_name
+		
+		for code_member: String in code_member_list:
+			if code_member.contains(old_target_name):
+				new_target_name = code_member
+				break
+		
+		var full_target_name: String = ".".join([ doc_name, new_target_name ])
 		var new_ref: String = RSTSyntaxTranslator.make_code_member_ref(
 			full_target_name,
-			target_name,
+			new_target_name,
 		)
 		
 		# Keeps track of how much the String length changes with each
@@ -88,7 +99,7 @@ static func autocomplete_code_member_refs(
 		
 		# Substitute the found ref only if it is pointing to
 		# one of the members of the current class from the db
-		if ref_match.get_string("target") in code_member_list:
+		if new_target_name in code_member_list:
 			text = reg.sub(text, new_ref, false, prev_start)
 	
 	return text

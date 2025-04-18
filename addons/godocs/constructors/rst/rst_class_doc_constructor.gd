@@ -25,6 +25,9 @@ func _init(
 		RSTClassDescriptionBuilder.new(),
 		RSTClassPropertyIndexBuilder.new(),
 		RSTClassMethodIndexBuilder.new(),
+		RSTClassSignalIndexBuilder.new(),
+		RSTClassConstantDescriptionBuilder.new(),
 		RSTClassPropertyDescriptionBuilder.new(),
 		RSTClassMethodDescriptionBuilder.new(),
+		RSTClassSignalDescriptionBuilder.new(),
 	]

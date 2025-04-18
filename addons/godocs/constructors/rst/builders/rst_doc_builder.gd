@@ -117,10 +117,13 @@ static func make_property_signature(
 	full_name: String,
 	type: String = "",
 	default_value: String = "",
+	is_static: bool = false,
 	make_ref: bool = true,
 ) -> String:
 	var result: String = ""
 	
+	if is_static:
+		result += "static "
 	if type != "":
 		result += RSTSyntaxTranslator.make_code_member_type_ref(type) + " "
 	
@@ -199,7 +202,8 @@ static func make_method_signature(
 			param.get("name", ""),
 			param.get("type", ""),
 			param.get("default", ""),
-			false
+			false,
+			false,
 		)
 		
 		if i < params.size() - 1:

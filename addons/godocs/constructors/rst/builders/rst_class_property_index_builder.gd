@@ -59,19 +59,24 @@ func _make_property_row(
 	var result: Array[String] = []
 	
 	var type: String = member_node.attributes.get("type", "")
+	var is_static: bool = member_node.attributes.get("qualifiers", "")\
+		.contains("static")
 	var name: String = member_node.attributes.get("name", "")
 	var full_name: String = ".".join([ doc_name, name ])
 	var default_value: String = member_node.attributes.get("default", "")
+	var signature: String = make_property_signature(
+		full_name, "", "", is_static, true
+	)
 	
 	var type_output := RSTSyntaxTranslator.make_code_member_type_ref(type)
-	var name_output := RSTSyntaxTranslator.make_code_member_ref(full_name, name)
+	var signature_output: String = signature
 	var default_value_output: String = ""
 	
 	if not default_value.is_empty():
 		default_value_output = RSTSyntaxTranslator.make_code(default_value)
 	
 	result.append(type_output)
-	result.append(name_output)
+	result.append(signature_output)
 	result.append(default_value_output)
 	
 	return result

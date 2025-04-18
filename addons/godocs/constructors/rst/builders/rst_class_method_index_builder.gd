@@ -35,7 +35,11 @@ func build(db: ClassDocDB) -> String:
 	var class_node: XMLNode = doc.root
 	
 	var title := "Method index"
-	var index: Array[Array] = _make_method_matrix(doc)
+	var index: Array[Array] = make_member_matrix(
+		"methods",
+		_make_method_row,
+		doc,
+	)
 	
 	if index.is_empty():
 		return ""
@@ -79,18 +83,3 @@ func _make_method_row(method_node: XMLNode, doc_name: String) -> Array[String]:
 	result.append(signature_output)
 	
 	return result
-
-func _make_method_matrix(doc: XMLDocument) -> Array[Array]:
-	var class_node: XMLNode = doc.root
-	var doc_name: String = class_node.attributes.get("name", "")
-	var methods_node: XMLNode = class_node.get_child_by_name("methods")
-	
-	if methods_node == null:
-		return []
-	
-	var matrix: Array[Array] = []
-	
-	for method_node: XMLNode in methods_node.children:
-		matrix.append(_make_method_row(method_node, doc_name))
-	
-	return matrix

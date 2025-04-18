@@ -35,7 +35,11 @@ func build(db: ClassDocDB) -> String:
 	var class_node: XMLNode = doc.root
 	
 	var title := "Property index"
-	var index: Array[Array] = _make_property_matrix(doc)
+	var index: Array[Array] = make_member_matrix(
+		"members",
+		_make_property_row,
+		doc,
+	)
 	
 	if index.is_empty():
 		return ""
@@ -80,18 +84,3 @@ func _make_property_row(
 	result.append(default_value_output)
 	
 	return result
-
-func _make_property_matrix(doc: XMLDocument) -> Array[Array]:
-	var class_node: XMLNode = doc.root
-	var doc_name: String = class_node.attributes.get("name", "")
-	var members_node: XMLNode = class_node.get_child_by_name("members")
-	
-	if members_node == null:
-		return []
-	
-	var data_matrix: Array[Array] = []
-	
-	for member_node: XMLNode in members_node.children:
-		data_matrix.append(_make_property_row(member_node, doc_name))
-	
-	return data_matrix

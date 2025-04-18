@@ -238,6 +238,25 @@ static func make_member_descriptions(
 	
 	return result
 
+static func make_member_matrix(
+	member_type: String,
+	row_maker: Callable,
+	doc: XMLDocument,
+) -> Array[Array]:
+	var class_node: XMLNode = doc.root
+	var doc_name: String = class_node.attributes.get("name", "")
+	var node_group: XMLNode = class_node.get_child_by_name(member_type)
+	
+	if node_group == null:
+		return []
+	
+	var data_matrix: Array[Array] = []
+	
+	for node: XMLNode in node_group.children:
+		data_matrix.append(row_maker.call(node, doc_name))
+	
+	return data_matrix
+
 # The method [method _get_code_member_ref_regex] is used to get a [RegEx]
 # able to find [code]refs[/code] created by this plugin based
 # on the prefix declared in the

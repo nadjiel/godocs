@@ -1,4 +1,3 @@
-## TODO: Make unit tests
 ## Creates a RST section with subsections describing the methods of a class.
 ## 
 ## The [RSTClassMethodDescriptionBuilder] is capable of creating a [String]

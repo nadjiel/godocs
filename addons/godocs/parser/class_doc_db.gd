@@ -84,7 +84,15 @@ func get_class_member_dict(
 			if not member_node.attributes.has("name"):
 				continue
 			
-			member_list.append(member_node.attributes.get("name", ""))
+			var member_name: String = member_node.attributes.get("name", "")
+			# If the member in question is an enum, add its name to
+			# the member name, like so: "Enum.MEMBER"
+			var enum_name: String = member_node.attributes.get("enum", "")
+			
+			if not enum_name.is_empty():
+				member_name = ".".join([ enum_name, member_name ])
+			
+			member_list.append(member_name)
 		
 		result[member_type] = member_list
 	

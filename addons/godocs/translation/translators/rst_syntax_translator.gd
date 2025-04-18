@@ -49,7 +49,10 @@ static func make_heading(content: String, level: int) -> String:
 	
 	if level == 3:
 		character = "-"
-		line = character.repeat(content.length())
+	if level == 4:
+		character = "~"
+	
+	line = character.repeat(content.length())
 	
 	result += line + "\n"
 	

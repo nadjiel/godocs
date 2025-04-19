@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjbub2h5chsin"]
+
+[ext_resource type="Script" uid="uid://cnyah1k8fwspv" path="res://test/manual/constructors/rst/builders/test_rst_class_method_description_builder/test_rst_class_method_description_builder.gd" id="1_ny6xw"]
+
+[node name="TestRSTClassMethodDescriptionBuilder" type="Node2D"]
+script = ExtResource("1_ny6xw")

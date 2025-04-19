@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://gdjsdh0io7o3"]
+
+[ext_resource type="Script" uid="uid://bx2odh4wxo1x5" path="res://test/manual/constructors/rst/builders/test_rst_class_heading_builder/test_rst_class_heading_builder.gd" id="1_nij6c"]
+
+[node name="TestRSTClassHeadingBuilder" type="Node2D"]
+script = ExtResource("1_nij6c")
